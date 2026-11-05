@@ -61,6 +61,7 @@ export default function SubscriptionPage() {
   const choose = async (plan: Plan) => {
     setBusyPlan(plan.id)
     const res = await startCheckout(plan)
+    if (res.kind === 'route') { navigate(res.to); return }
     if (res.kind === 'redirect') { window.location.assign(res.url); return }
     setBusyPlan(null)
     if (res.kind === 'activated') {

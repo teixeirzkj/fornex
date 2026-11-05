@@ -31,6 +31,7 @@ const Favorites = lazy(() => import('@/pages/app/Favorites'))
 const History = lazy(() => import('@/pages/app/History'))
 const Updates = lazy(() => import('@/pages/app/Updates'))
 const SubscriptionPage = lazy(() => import('@/pages/app/Subscription'))
+const Checkout = lazy(() => import('@/pages/app/Checkout'))
 const Account = lazy(() => import('@/pages/app/Account'))
 const Support = lazy(() => import('@/pages/app/Support'))
 
@@ -82,6 +83,7 @@ export default function App() {
           <Route path="historico" element={<History />} />
           <Route path="atualizacoes" element={<Updates />} />
           <Route path="assinatura" element={<SubscriptionPage />} />
+          <Route path="checkout/:slug" element={<Checkout />} />
           <Route path="conta" element={<Account />} />
           <Route path="suporte" element={<Support />} />
         </Route>

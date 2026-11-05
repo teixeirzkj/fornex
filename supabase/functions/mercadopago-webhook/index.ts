@@ -11,6 +11,7 @@ import { adminClient } from '../_shared/auth.ts'
 import { HttpError, json } from '../_shared/http.ts'
 import { hmacSha256Hex, timingSafeEqual } from '../_shared/secrets.ts'
 import { addMonths, mpFetch } from '../_shared/mercadopago.ts'
+import { applyLifetimePayment } from '../_shared/billing.ts'
 
 type PaymentStatus = 'pending' | 'in_process' | 'approved' | 'rejected' | 'refunded' | 'canceled'
 
@@ -203,90 +204,11 @@ async function handleAuthorizedPayment(db: SupabaseClient, id: string) {
   return { handled: 'authorized_payment' }
 }
 
-/**
- * Plano vitalício (pagamento único, external_reference = lifetime:<user_id>:<plan_id>).
- * Aprovado → cria assinatura vitalícia (sem vencimento) e encerra a mensal, se houver.
- * Estornado/chargeback → revoga o acesso vitalício.
- */
-async function handleLifetimePayment(db: SupabaseClient, pay: Record<string, unknown>, ref: string) {
-  const [, userId, planId] = ref.split(':')
-  if (!UUID_RE.test(userId ?? '') || !UUID_RE.test(planId ?? '')) return { ignored: 'invalid_reference' }
-
-  const { data: plan, error: planErr } = await db.from('plans')
-    .select('id, name, price_cents, interval').eq('id', planId).maybeSingle()
-  if (planErr) throw planErr
-  if (!plan || plan.interval !== 'lifetime') return { ignored: 'plan_not_lifetime' }
-
-  const status = mapPaymentStatus(pay.status)
-  const gatewayPaymentId = String(pay.id)
-  const amountCents = Math.max(0, Math.round(Number(pay.transaction_amount ?? 0) * 100)) || 0
-  // Defesa extra: o valor pago precisa cobrir o preço do plano no banco
-  if (status === 'approved' && amountCents + 1 < plan.price_cents) {
-    console.error('pagamento vitalício abaixo do preço', gatewayPaymentId, amountCents, plan.price_cents)
-    return { ignored: 'amount_mismatch' }
-  }
-
-  const { data: existing, error: exErr } = await db.from('payments').select('id, status, subscription_id')
-    .eq('gateway', 'mercadopago').eq('gateway_payment_id', gatewayPaymentId).maybeSingle()
-  if (exErr) throw exErr
-
-  let subscriptionId: string | null = existing?.subscription_id ?? null
-  const now = new Date().toISOString()
-
-  if (status === 'approved' && existing?.status !== 'approved') {
-    // Encerra assinaturas vivas (ex.: Básico mensal) — inclusive a recorrência no Mercado Pago
-    const { data: live, error: liveErr } = await db.from('subscriptions')
-      .select('id, gateway, gateway_subscription_id').eq('user_id', userId)
-      .in('status', ['pending', 'active', 'past_due', 'paused'])
-    if (liveErr) throw liveErr
-    for (const s of live ?? []) {
-      if (s.gateway === 'mercadopago' && s.gateway_subscription_id && !String(s.gateway_subscription_id).startsWith('payment:')) {
-        try {
-          await mpFetch(`/preapproval/${encodeURIComponent(s.gateway_subscription_id)}`, { method: 'PUT', body: { status: 'cancelled' } })
-        } catch (e) {
-          console.error('falha ao cancelar recorrência no MP', s.gateway_subscription_id, e)
-        }
-      }
-      const { error } = await db.from('subscriptions').update({ status: 'canceled', canceled_at: now }).eq('id', s.id)
-      if (error) throw error
-    }
-
-    const { data: sub, error: subErr } = await db.from('subscriptions').insert({
-      user_id: userId, plan_id: plan.id, status: 'active', gateway: 'mercadopago',
-      gateway_subscription_id: `payment:${gatewayPaymentId}`,
-      current_period_start: now, current_period_end: null,
-    }).select('id').single()
-    if (subErr) throw subErr
-    subscriptionId = sub.id
-    await notify(db, userId, 'Acesso vitalício liberado', `Pagamento aprovado! Seu plano ${plan.name} está ativo para sempre.`)
-  }
-
-  if ((status === 'refunded' || status === 'canceled') && existing?.status === 'approved' && subscriptionId) {
-    await db.from('subscriptions').update({ status: 'canceled', canceled_at: now }).eq('id', subscriptionId)
-    await notify(db, userId, 'Acesso vitalício encerrado', 'O pagamento do plano vitalício foi estornado e o acesso foi encerrado.')
-  }
-  if (status === 'rejected' && existing?.status !== 'rejected') {
-    await notify(db, userId, 'Pagamento recusado', 'Não conseguimos aprovar o pagamento do plano vitalício. Tente outro cartão.')
-  }
-
-  const row = {
-    user_id: userId, subscription_id: subscriptionId, gateway: 'mercadopago', gateway_payment_id: gatewayPaymentId,
-    amount_cents: amountCents, currency: 'BRL', status,
-    description: `FORNEX — Plano ${plan.name}${Number(pay.installments) > 1 ? ` (${pay.installments}x)` : ''}`,
-    paid_at: status === 'approved' ? (typeof pay.date_approved === 'string' ? pay.date_approved : now) : null,
-  }
-  const { error } = existing
-    ? await db.from('payments').update(row).eq('id', existing.id)
-    : await db.from('payments').insert(row)
-  if (error) throw error
-  return { handled: 'lifetime_payment', status }
-}
-
 /** Pagamento avulso: vitalício ou ligado a uma assinatura. */
 async function handlePayment(db: SupabaseClient, id: string) {
   const pay = await mpFetch<Record<string, unknown>>(`/v1/payments/${encodeURIComponent(id)}`)
   if (typeof pay.external_reference === 'string' && pay.external_reference.startsWith('lifetime:')) {
-    return handleLifetimePayment(db, pay, pay.external_reference)
+    return applyLifetimePayment(db, pay)
   }
   const meta = (pay.metadata ?? {}) as Record<string, unknown>
   const sub = await findSubscription(db, pay.external_reference, meta.preapproval_id ?? meta.subscription_id)
