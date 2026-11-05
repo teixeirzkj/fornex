@@ -36,6 +36,7 @@ const Checkout = lazy(() => import('@/pages/app/Checkout'))
 const Stores = lazy(() => import('@/pages/app/Stores'))
 const StoresCallback = lazy(() => import('@/pages/app/StoresCallback'))
 const Listings = lazy(() => import('@/pages/app/Listings'))
+const Publish = lazy(() => import('@/pages/app/Publish'))
 const Account = lazy(() => import('@/pages/app/Account'))
 const Support = lazy(() => import('@/pages/app/Support'))
 
@@ -92,6 +93,7 @@ export default function App() {
           <Route path="lojas" element={<Stores />} />
           <Route path="lojas/callback" element={<StoresCallback />} />
           <Route path="anuncios" element={<Listings />} />
+          <Route path="publicar" element={<Publish />} />
           <Route path="conta" element={<Account />} />
           <Route path="suporte" element={<Support />} />
         </Route>

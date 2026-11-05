@@ -98,11 +98,18 @@ export default function Stores() {
               {a.status !== 'active' && a.last_error && <p className="mt-3 text-xs text-amber-400">{a.last_error}</p>}
               <div className="mt-4 flex flex-wrap gap-2">
                 {a.status !== 'active' && <Button size="sm" onClick={connect} icon={<RefreshCw className="h-3.5 w-3.5" />}>Reconectar</Button>}
-                <ButtonLink to={`/app/anuncios?loja=${a.id}`} size="sm" variant="secondary">Ver anúncios</ButtonLink>
-                <a href={`https://www.mercadolivre.com.br/perfil/${encodeURIComponent(a.nickname ?? '')}`} target="_blank" rel="noopener noreferrer"
+                <ButtonLink to="/app/publicar" size="sm">Publicar produtos</ButtonLink>
+                <ButtonLink to={`/app/anuncios?loja=${a.id}`} size="sm" variant="secondary">Meus anúncios</ButtonLink>
+                <a href="https://www.mercadolivre.com.br/anuncios/lista" target="_blank" rel="noopener noreferrer"
                   className="inline-flex h-9 items-center gap-1.5 rounded-fx-md px-3 text-sm text-muted transition hover:bg-surface-2 hover:text-fg">
-                  Perfil <ExternalLink className="h-3.5 w-3.5" />
+                  Gerenciar no ML <ExternalLink className="h-3.5 w-3.5" />
                 </a>
+                {a.nickname && (
+                  <a href={`https://perfil.mercadolivre.com.br/${encodeURIComponent(a.nickname)}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex h-9 items-center gap-1.5 rounded-fx-md px-3 text-sm text-muted transition hover:bg-surface-2 hover:text-fg">
+                    Perfil <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                )}
                 <Button size="sm" variant="ghost" className="ml-auto hover:text-red-400" onClick={() => setToRemove(a)} icon={<Unplug className="h-3.5 w-3.5" />}>Desconectar</Button>
               </div>
             </motion.div>

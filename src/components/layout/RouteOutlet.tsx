@@ -36,7 +36,7 @@ export function prefetchRoutes() {
       () => import('@/pages/app/Overview'), () => import('@/pages/app/Suppliers'), () => import('@/pages/app/SupplierDetail'),
       () => import('@/pages/app/Categories'), () => import('@/pages/app/Favorites'), () => import('@/pages/app/History'),
       () => import('@/pages/app/Updates'), () => import('@/pages/app/Subscription'), () => import('@/pages/app/Account'),
-      () => import('@/pages/app/Support'), () => import('@/pages/app/Stores'), () => import('@/pages/app/Listings'),
+      () => import('@/pages/app/Support'), () => import('@/pages/app/Stores'), () => import('@/pages/app/Listings'), () => import('@/pages/app/Publish'),
       () => import('@/pages/public/Landing'), () => import('@/pages/public/Pricing'),
       () => import('@/pages/auth/Login'), () => import('@/pages/auth/Signup'),
       () => import('@/components/layout/AppLayout'), () => import('@/components/layout/PublicLayout'), () => import('@/components/layout/AuthLayout'),

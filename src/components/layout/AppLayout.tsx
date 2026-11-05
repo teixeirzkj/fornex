@@ -4,7 +4,7 @@ import { RouteOutlet } from '@/components/layout/RouteOutlet'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Bell, Building2, CreditCard, Heart, History, LayoutDashboard, LayoutGrid, LifeBuoy, LogOut, Menu, Megaphone,
-  Search, Shield, Store, Tag, UserRound, X,
+  Search, Shield, Store, Tag, Upload, UserRound, X,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { FavoritesProvider } from '@/hooks/useFavorites'
@@ -24,6 +24,7 @@ const NAV = [
     { to: '/app/atualizacoes', label: 'Atualizações', icon: Megaphone, badge: true },
   ] },
   { group: 'Mercado Livre', items: [
+    { to: '/app/publicar', label: 'Publicar produtos', icon: Upload },
     { to: '/app/lojas', label: 'Minhas lojas', icon: Store },
     { to: '/app/anuncios', label: 'Meus anúncios', icon: Tag },
   ] },
@@ -62,7 +63,7 @@ function SidebarContent({ onNavigate, unread }: { onNavigate?: () => void; unrea
       <div className="flex h-16 items-center px-5">
         <Link to="/app" onClick={onNavigate} aria-label="FORNEX — início"><Logo className="h-7" /></Link>
       </div>
-      <nav className="scrollbar-thin flex-1 space-y-6 overflow-y-auto px-3 py-4">
+      <nav className="fx-nav scrollbar-thin flex-1 space-y-6 overflow-y-auto px-3 py-4">
         {NAV.map((g) => (
           <div key={g.group}>
             <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-[.14em] text-muted/70">{g.group}</p>
@@ -71,7 +72,7 @@ function SidebarContent({ onNavigate, unread }: { onNavigate?: () => void; unrea
                 <li key={it.to}>
                   <NavLink to={it.to} end={it.end} onClick={onNavigate}
                     className={({ isActive }) => cn('group relative flex items-center gap-3 rounded-fx-md px-3 py-2.5 text-sm font-medium transition-colors',
-                      isActive ? 'text-fg' : 'text-muted hover:bg-surface-2/60 hover:text-fg')}>
+                      isActive ? 'text-fg' : 'text-muted hover:translate-x-1 hover:bg-surface-2/60 hover:text-fg')}>
                     {({ isActive }) => (
                       <>
                         {isActive && (

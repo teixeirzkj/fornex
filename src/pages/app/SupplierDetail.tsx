@@ -150,7 +150,7 @@ export default function SupplierDetail() {
 
           <InfoSection icon={<Package />} title={`Produtos disponíveis${productTotal ? ` (${formatNumber(productTotal)})` : ''}`}>
             {products.length === 0 ? (
-              <p className="text-sm text-muted">Nenhum produto cadastrado ou sincronizado para este fornecedor.</p>
+              <p className="text-sm text-muted">Nenhum produto cadastrado ou sincronizado para este fornecedor ainda. Veja todos os produtos disponíveis em <Link to="/app/publicar" className="text-accent hover:underline">Publicar produtos</Link>.</p>
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-3">
