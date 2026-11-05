@@ -102,7 +102,7 @@ export default function AdminPayments() {
       <PageHeader title="Pagamentos" description="Cobranças recebidas pelo gateway e pagamentos registrados manualmente."
         actions={<Button onClick={() => { setErrors({}); setOpen(true) }} icon={<Plus className="h-4 w-4" />}>Registrar pagamento manual</Button>} />
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-4">
         <StatCard loading={!totals} label="Total aprovado" icon={<Receipt />} tone="green" value={formatBRL(totals?.approved ?? 0)} hint={`${totals?.count ?? 0} pagamento(s)`} />
         <StatCard loading={!totals} label="Aprovado em 30 dias" icon={<Receipt />} tone="green" value={formatBRL(totals?.d30 ?? 0)} />
         <StatCard loading={loading} label="Registros no filtro" icon={<Receipt />} value={total} />

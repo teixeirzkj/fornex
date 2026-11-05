@@ -58,7 +58,7 @@ export default function AdminIntegrations() {
       <PageHeader title="Integrações" description="Conecte a FORNEX aos sistemas dos fornecedores para manter produtos e estoque atualizados."
         actions={<Button onClick={() => { setErrors({}); setOpen(true) }} icon={<Plus className="h-4 w-4" />}>Nova integração</Button>} />
 
-      <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
         {(Object.entries(INTEGRATION_TYPES) as [IntegrationType, (typeof INTEGRATION_TYPES)[IntegrationType]][]).map(([k, t]) => (
           <div key={k} className="card p-4">
             <p className="text-sm font-semibold">{t.label}</p>

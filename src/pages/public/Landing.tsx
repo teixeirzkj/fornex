@@ -49,8 +49,8 @@ function SectionHeader({ eyebrow, title, text, center = true }: { eyebrow: strin
   return (
     <Reveal className={center ? 'mx-auto max-w-2xl text-center' : 'max-w-2xl'}>
       <span className="eyebrow">{eyebrow}</span>
-      <h2 className="mt-4 text-3xl font-extrabold leading-tight text-fg sm:text-4xl">{title}</h2>
-      {text && <p className="mt-4 text-muted">{text}</p>}
+      <h2 className="mt-3 text-2xl font-extrabold leading-tight text-fg sm:mt-4 sm:text-4xl">{title}</h2>
+      {text && <p className="mt-3 text-sm text-muted sm:mt-4 sm:text-base">{text}</p>}
     </Reveal>
   )
 }
@@ -86,27 +86,27 @@ export default function Landing() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden pb-20 pt-14 sm:pt-20">
+    <section className="relative overflow-hidden pb-14 pt-10 sm:pb-20 sm:pt-20">
       <div className="grid-bg pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)]" />
       <div className="pointer-events-none absolute left-1/2 top-0 h-[480px] w-[900px] -translate-x-1/2 rounded-full bg-fornex-electric/15 blur-[120px]" />
 
       <motion.div variants={stagger(0.08)} initial="hidden" animate="show" className="container-fx relative text-center">
         <motion.span variants={fadeUp} className="eyebrow">Plataforma de fornecedores nacionais</motion.span>
-        <motion.h1 variants={fadeUp} className="mx-auto mt-6 max-w-4xl text-[2.4rem] font-extrabold leading-[1.08] text-white sm:text-6xl">
+        <motion.h1 variants={fadeUp} className="mx-auto mt-5 max-w-4xl text-[2rem] font-extrabold leading-[1.1] text-white sm:mt-6 sm:text-6xl">
           Seu acesso a <span className="bg-gradient-to-r from-fornex-blue to-fornex-ice bg-clip-text text-transparent">novos fornecedores</span>.
         </motion.h1>
-        <motion.p variants={fadeUp} className="mx-auto mt-6 max-w-2xl text-base text-muted sm:text-lg">
+        <motion.p variants={fadeUp} className="mx-auto mt-4 max-w-2xl text-sm text-muted sm:mt-6 sm:text-lg">
           Encontre fornecedores com mais facilidade, consulte condições comerciais e organize seus contatos em um só lugar. Feito para quem vende em marketplaces e lojas online.
         </motion.p>
-        <motion.div variants={fadeUp} className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-          <ButtonLink to="/cadastro" size="lg" className="w-full sm:w-auto">
+        <motion.div variants={fadeUp} className="mt-7 grid grid-cols-2 gap-2.5 sm:mt-9 sm:flex sm:items-center sm:justify-center sm:gap-3">
+          <ButtonLink to="/cadastro" size="lg" className="w-full px-3 sm:w-auto sm:px-6">
             Começar agora <ArrowRight className="h-4 w-4" />
           </ButtonLink>
-          <ButtonLink to="/planos" size="lg" variant="secondary" className="w-full sm:w-auto">Ver planos</ButtonLink>
+          <ButtonLink to="/planos" size="lg" variant="secondary" className="w-full px-3 sm:w-auto sm:px-6">Ver planos</ButtonLink>
         </motion.div>
       </motion.div>
 
-      <div className="container-fx relative mt-16">
+      <div className="container-fx relative mt-10 sm:mt-16">
         <DashboardMock />
       </div>
     </section>
@@ -156,11 +156,11 @@ function DashboardMock() {
                 <div key={i} className={`h-6 shrink-0 rounded-full border ${i === 0 ? 'border-fornex-blue/50 bg-fornex-blue/15' : 'border-line'}`} style={{ width: w }} />
               ))}
             </div>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-5 grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, i) => (
                 <motion.div key={i} initial={reduce ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 + i * 0.08, duration: 0.65, ease: EASE }}
-                  className={`rounded-xl border border-line bg-fornex-midnight/50 p-3.5 ${i > 3 ? 'hidden lg:block' : i > 1 ? 'hidden sm:block' : ''}`}>
+                  className={`rounded-xl border border-line bg-fornex-midnight/50 p-3.5 ${i > 3 ? 'hidden lg:block' : ''}`}>
                   <div className="flex items-center gap-3">
                     <div className="grid h-9 w-9 place-items-center rounded-lg bg-gradient-to-br from-fornex-blue/40 to-fornex-electric/20">
                       <Building2 className="h-4 w-4 text-fornex-ice" />
@@ -227,20 +227,20 @@ function StatsStrip() {
 
 function Benefits() {
   return (
-    <section className="py-24">
+    <section className="py-14 sm:py-24">
       <div className="container-fx">
         <SectionHeader eyebrow="Por que a FORNEX" title="Tudo o que você precisa para encontrar fornecedores"
           text="Menos tempo procurando contatos, mais tempo vendendo. Informações organizadas e prontas para consulta." />
         <motion.div variants={stagger()} initial="hidden" whileInView="show" viewport={{ once: true, margin: '-60px' }}
-          className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          className="mt-8 grid grid-cols-2 gap-3 sm:mt-14 sm:gap-4 lg:grid-cols-4">
           {BENEFITS.map((b) => (
             <motion.div key={b.title} variants={fadeUp} whileHover={{ y: -3 }}
-              className="card group p-6 transition-colors hover:border-accent/40">
-              <span className="grid h-11 w-11 place-items-center rounded-fx-md bg-accent/10 text-accent transition group-hover:bg-fornex-electric group-hover:text-white">
-                <b.icon className="h-5 w-5" />
+              className="card group p-4 transition-colors hover:border-accent/40 sm:p-6">
+              <span className="grid h-9 w-9 place-items-center rounded-fx-md bg-accent/10 text-accent transition group-hover:bg-fornex-electric group-hover:text-white sm:h-11 sm:w-11">
+                <b.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </span>
-              <h3 className="mt-5 text-base font-bold text-fg">{b.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted">{b.text}</p>
+              <h3 className="mt-3 text-sm font-bold text-fg sm:mt-5 sm:text-base">{b.title}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted sm:mt-2 sm:text-sm">{b.text}</p>
             </motion.div>
           ))}
         </motion.div>
@@ -253,10 +253,10 @@ function Benefits() {
 
 function HowItWorks() {
   return (
-    <section id="como-funciona" className="scroll-mt-20 border-y border-line bg-fornex-midnight/60 py-24">
+    <section id="como-funciona" className="scroll-mt-20 border-y border-line bg-fornex-midnight/60 py-14 sm:py-24">
       <div className="container-fx">
         <SectionHeader eyebrow="Como funciona" title="Do cadastro ao primeiro contato em quatro passos" />
-        <div className="relative mt-16 grid gap-6 md:grid-cols-4">
+        <div className="relative mt-10 grid grid-cols-2 gap-x-3 gap-y-8 sm:mt-16 sm:gap-6 md:grid-cols-4">
           <div className="absolute left-[12.5%] right-[12.5%] top-6 hidden h-px bg-gradient-to-r from-transparent via-line to-transparent md:block" />
           {STEPS.map((s, i) => (
             <Reveal key={s.title} delay={i * 0.08} className="relative text-center">
@@ -264,8 +264,8 @@ function HowItWorks() {
                 <s.icon className="h-5 w-5" />
                 <span className="absolute -right-1 -top-1 grid h-5 w-5 place-items-center rounded-full bg-fornex-electric text-[10px] font-bold text-white">{i + 1}</span>
               </div>
-              <h3 className="mt-5 font-bold text-fg">{s.title}</h3>
-              <p className="mx-auto mt-2 max-w-[15rem] text-sm text-muted">{s.text}</p>
+              <h3 className="mt-3 text-sm font-bold text-fg sm:mt-5 sm:text-base">{s.title}</h3>
+              <p className="mx-auto mt-1.5 max-w-[15rem] text-xs text-muted sm:mt-2 sm:text-sm">{s.text}</p>
             </Reveal>
           ))}
         </div>
@@ -365,21 +365,21 @@ function CategoriesSection() {
   if (!isSupabaseConfigured || (cats && cats.length === 0)) return null
 
   return (
-    <section id="categorias" className="scroll-mt-20 border-y border-line bg-fornex-midnight/60 py-24">
+    <section id="categorias" className="scroll-mt-20 border-y border-line bg-fornex-midnight/60 py-14 sm:py-24">
       <div className="container-fx">
         <SectionHeader eyebrow="Categorias" title="Fornecedores organizados por segmento" text="Navegue pelas categorias e encontre fornecedores do seu nicho." />
-        <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="mt-8 grid grid-cols-4 gap-2 sm:mt-14 sm:grid-cols-3 sm:gap-3 lg:grid-cols-5">
           {cats === null
-            ? Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-28 rounded-fx-lg" />)
+            ? Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-fx-lg sm:h-28" />)
             : cats.map((c, i) => (
               <Reveal key={c.id} delay={(i % 5) * 0.04}>
-                <motion.div whileHover={{ y: -3 }} className="card flex h-full flex-col gap-3 p-4 transition-colors hover:border-accent/40">
-                  <span className="grid h-10 w-10 place-items-center rounded-fx-md bg-accent/10 text-accent">
-                    <CategoryIcon name={c.icon} className="h-5 w-5" />
+                <motion.div whileHover={{ y: -3 }} className="card flex h-full flex-col items-center gap-1.5 p-2 text-center transition-colors hover:border-accent/40 sm:items-start sm:gap-3 sm:p-4 sm:text-left">
+                  <span className="grid h-8 w-8 place-items-center rounded-fx-md bg-accent/10 text-accent sm:h-10 sm:w-10">
+                    <CategoryIcon name={c.icon} className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
                   <div>
-                    <div className="text-sm font-semibold text-fg">{c.name}</div>
-                    {c.total > 0 && <div className="mt-0.5 text-xs text-muted">{formatNumber(c.total)} {c.total === 1 ? 'fornecedor' : 'fornecedores'}</div>}
+                    <div className="text-[10.5px] font-semibold leading-tight text-fg sm:text-sm">{c.name}</div>
+                    {c.total > 0 && <div className="mt-0.5 hidden text-xs text-muted sm:block">{formatNumber(c.total)} {c.total === 1 ? 'fornecedor' : 'fornecedores'}</div>}
                   </div>
                 </motion.div>
               </Reveal>
@@ -394,17 +394,17 @@ function CategoriesSection() {
 
 function Differentials() {
   return (
-    <section className="py-24">
+    <section className="py-14 sm:py-24">
       <div className="container-fx grid gap-12 lg:grid-cols-[1fr_1.3fr] lg:items-center">
         <SectionHeader center={false} eyebrow="Diferenciais" title="Uma plataforma feita para o dia a dia de quem vende"
           text="Pensada para ser simples de usar e confiável, do primeiro acesso à rotina de compras." />
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {DIFFERENTIALS.map((d, i) => (
             <Reveal key={d.title} delay={i * 0.06}>
-              <div className="card h-full p-5">
-                <d.icon className="h-5 w-5 text-fornex-ice" />
-                <h3 className="mt-4 font-bold text-fg">{d.title}</h3>
-                <p className="mt-1.5 text-sm text-muted">{d.text}</p>
+              <div className="card h-full p-4 sm:p-5">
+                <d.icon className="h-4 w-4 text-fornex-ice sm:h-5 sm:w-5" />
+                <h3 className="mt-3 text-sm font-bold text-fg sm:mt-4 sm:text-base">{d.title}</h3>
+                <p className="mt-1 text-xs text-muted sm:mt-1.5 sm:text-sm">{d.text}</p>
               </div>
             </Reveal>
           ))}

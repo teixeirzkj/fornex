@@ -31,22 +31,22 @@ export default function Categories() {
     <div>
       <PageHeader eyebrow="Explorar" title="Categorias" description="Navegue pelos segmentos e encontre fornecedores do seu nicho." />
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32" />)}</div>
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-32" />)}</div>
       ) : cats.length === 0 ? (
         <EmptyState icon={<LayoutGrid />} title="Nenhuma categoria cadastrada" description="As categorias são criadas pela equipe da plataforma." />
       ) : (
-        <motion.div variants={stagger(0.04)} initial="hidden" animate="show" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div variants={stagger(0.04)} initial="hidden" animate="show" className="grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3">
           {cats.map((c) => (
             <motion.div key={c.id} variants={fadeUp}>
               <Link to={`/app/fornecedores?categoria=${c.slug}`}
-                className="card group flex h-full flex-col p-5 transition duration-300 ease-fx hover:-translate-y-0.5 hover:border-accent/40">
+                className="card group flex h-full flex-col p-3.5 sm:p-5 transition duration-300 ease-fx hover:-translate-y-0.5 hover:border-accent/40">
                 <div className="flex items-start justify-between">
                   <span className="grid h-11 w-11 place-items-center rounded-fx-md bg-accent/10 text-accent"><CategoryIcon name={c.icon} className="h-5 w-5" /></span>
                   <ArrowUpRight className="h-4 w-4 text-muted transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-accent" />
                 </div>
-                <h3 className="mt-4 font-heading text-base font-bold text-fg">{c.name}</h3>
-                {c.description && <p className="mt-1 line-clamp-2 text-sm text-muted">{c.description}</p>}
-                <p className="mt-auto pt-4 text-xs font-medium text-muted">
+                <h3 className="mt-3 font-heading text-sm font-bold text-fg sm:mt-4 sm:text-base">{c.name}</h3>
+                {c.description && <p className="mt-1 line-clamp-2 text-xs text-muted sm:text-sm">{c.description}</p>}
+                <p className="mt-auto pt-3 text-[11px] font-medium text-muted sm:pt-4 sm:text-xs">
                   {counts[c.id] ? `${counts[c.id]} ${counts[c.id] === 1 ? 'fornecedor publicado' : 'fornecedores publicados'}` : 'Em breve'}
                 </p>
               </Link>

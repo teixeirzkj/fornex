@@ -96,17 +96,19 @@ export default function AdminLayout() {
       {/* Drawer mobile */}
       <AnimatePresence>
         {mobileOpen && (
-          <div className="fixed inset-0 z-50 lg:hidden">
-            <motion.div className="absolute inset-0 bg-fornex-midnight/70 backdrop-blur-sm" onClick={() => setMobileOpen(false)}
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-            <motion.aside initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="absolute inset-y-0 left-0 w-[280px] border-r border-line bg-fornex-navy">
-              <button type="button" onClick={() => setMobileOpen(false)} aria-label="Fechar menu"
+          <motion.div key="menu-overlay" className="fixed inset-0 z-50 bg-fornex-midnight/70 backdrop-blur-sm lg:hidden"
+            onClick={() => setMobileOpen(false)} aria-hidden
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, pointerEvents: 'none' }}
+            transition={{ duration: 0.3 }} />
+        )}
+        {mobileOpen && (
+          <motion.aside key="menu-drawer" initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%', pointerEvents: 'none' }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-y-0 left-0 z-50 w-[280px] max-w-[85vw] border-r border-line bg-fornex-navy lg:hidden">
+            <button type="button" onClick={() => setMobileOpen(false)} aria-label="Fechar menu"
                 className="absolute right-3 top-4 z-10 rounded-md p-1.5 text-muted hover:text-fg"><X className="h-5 w-5" /></button>
-              <SidebarContent collapsed={false} onNavigate={() => setMobileOpen(false)} />
-            </motion.aside>
-          </div>
+            <SidebarContent collapsed={false} onNavigate={() => setMobileOpen(false)} />
+          </motion.aside>
         )}
       </AnimatePresence>
 

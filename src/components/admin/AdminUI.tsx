@@ -30,13 +30,13 @@ export function StatCard({ label, value, hint, icon, tone = 'blue', loading }: {
     amber: 'bg-amber-500/10 text-amber-400', red: 'bg-red-500/10 text-red-400',
   }
   return (
-    <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.3 }} className="card p-5">
-      <div className="flex items-center justify-between">
-        <p className="text-xs font-medium uppercase tracking-wider text-muted">{label}</p>
-        <span className={cn('grid h-8 w-8 place-items-center rounded-fx-sm [&>svg]:h-4 [&>svg]:w-4', tones[tone])}>{icon}</span>
+    <motion.div whileHover={{ y: -2 }} transition={{ duration: 0.3 }} className="card p-3 sm:p-5">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[10px] font-medium uppercase leading-tight tracking-wider text-muted sm:text-xs">{label}</p>
+        <span className={cn('grid h-7 w-7 shrink-0 place-items-center rounded-fx-sm sm:h-8 sm:w-8 [&>svg]:h-3.5 [&>svg]:w-3.5 sm:[&>svg]:h-4 sm:[&>svg]:w-4', tones[tone])}>{icon}</span>
       </div>
-      {loading ? <Skeleton className="mt-3 h-8 w-24" /> : <p className="mt-3 font-heading text-2xl font-bold text-fg">{value}</p>}
-      {hint && <p className="mt-1 text-xs text-muted">{hint}</p>}
+      {loading ? <Skeleton className="mt-2 h-7 w-20 sm:mt-3 sm:h-8 sm:w-24" /> : <p className="mt-2 truncate font-heading text-lg font-bold text-fg sm:mt-3 sm:text-2xl">{value}</p>}
+      {hint && <p className="mt-0.5 line-clamp-2 text-[11px] text-muted sm:mt-1 sm:text-xs">{hint}</p>}
     </motion.div>
   )
 }
@@ -162,5 +162,5 @@ export const centsToReais = (c: number | null | undefined) => (c == null ? '' : 
 
 /** Tabela ou lista: pequenos filtros em linha */
 export function FilterBar({ children }: { children: ReactNode }) {
-  return <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{children}</div>
+  return <div className="mb-4 grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">{children}</div>
 }

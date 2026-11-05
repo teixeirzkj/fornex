@@ -156,7 +156,7 @@ export default function Suppliers() {
       </div>
 
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 6 }).map((_, i) => <SupplierCardSkeleton key={i} />)}</div>
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-3">{Array.from({ length: 6 }).map((_, i) => <SupplierCardSkeleton key={i} />)}</div>
       ) : items.length === 0 ? (
         q || activeFilters > 0 ? (
           <EmptyState icon={<Filter />} title="Nenhum fornecedor com esses filtros"
@@ -172,7 +172,7 @@ export default function Suppliers() {
         )
       ) : (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-3">
             {items.map((s, i) => <SupplierCard key={s.id} s={s} index={i % PAGE} />)}
           </div>
           {total != null && items.length < total && (

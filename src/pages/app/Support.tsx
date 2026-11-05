@@ -26,7 +26,7 @@ export default function Support() {
       <PageHeader eyebrow="Ajuda" title="Suporte" description="Fale com a nossa equipe ou consulte as dúvidas mais comuns." />
 
       {hasChannels ? (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {wa && (
             <a href={wa} target="_blank" rel="noopener noreferrer" className="card group flex items-center gap-4 p-5 transition hover:border-accent/40">
               <span className="grid h-12 w-12 place-items-center rounded-fx-md bg-emerald-500/10 text-emerald-400"><MessageCircle className="h-5 w-5" /></span>

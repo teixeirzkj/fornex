@@ -44,7 +44,7 @@ export default function AdminOverview() {
 
       {failed && <div className="mb-6"><Notice tone="warning" title="Não foi possível carregar os indicadores">Verifique se a migration foi aplicada e se seu usuário tem papel de administrador.</Notice></div>}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-4">
         <StatCard loading={loading} label="Receita recorrente (MRR)" icon={<TrendingUp />} tone="green" value={formatBRL(m?.mrr_cents ?? 0)} hint="Planos anuais divididos por 12" />
         <StatCard loading={loading} label="Receita 30 dias" icon={<Wallet />} tone="green" value={formatBRL(m?.revenue_30d_cents ?? 0)} hint="Pagamentos aprovados" />
         <StatCard loading={loading} label="Assinaturas ativas" icon={<Layers />} value={formatNumber(m?.active_subscriptions)} hint={`${formatNumber(m?.paid_subscriptions ?? 0)} pagas`} />
@@ -113,7 +113,7 @@ export default function AdminOverview() {
         </section>
       </div>
 
-      <section className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <section className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
         {[
           { to: '/admin/integracoes', icon: Plug, label: 'Configurar integração' },
           { to: '/admin/atualizacoes', icon: Megaphone, label: 'Publicar atualização' },

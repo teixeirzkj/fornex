@@ -138,7 +138,7 @@ export default function SubscriptionPage() {
                 {st && <Badge tone={st.tone}>{st.label}</Badge>}
                 {sub.cancel_at_period_end && sub.status === 'active' && <Badge tone="amber">Não será renovada</Badge>}
               </div>
-              <dl className="mt-4 grid gap-4 text-sm sm:grid-cols-3">
+              <dl className="mt-4 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
                 <div>
                   <dt className="text-xs text-muted">Valor</dt>
                   <dd className="mt-0.5 font-medium text-fg">{!sub.plan ? '—' : !sub.plan.price_cents ? 'Gratuito'

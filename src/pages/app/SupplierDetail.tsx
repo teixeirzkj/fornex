@@ -132,7 +132,7 @@ export default function SupplierDetail() {
           </InfoSection>
 
           <InfoSection icon={<Truck />} title="Condições comerciais">
-            <dl className="grid gap-4 sm:grid-cols-2">
+            <dl className="grid grid-cols-2 gap-4">
               <Info label="Pedido mínimo" value={s.min_order} />
               <Info label="Envio e frete" value={s.shipping_info} />
             </dl>
@@ -151,7 +151,7 @@ export default function SupplierDetail() {
               <p className="text-sm text-muted">Nenhum produto cadastrado ou sincronizado para este fornecedor.</p>
             ) : (
               <>
-                <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-3">
                   {products.map((p) => <ProductCard key={p.id} p={p} />)}
                 </div>
                 {products.length < productTotal && (

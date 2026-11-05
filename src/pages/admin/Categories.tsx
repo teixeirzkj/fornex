@@ -89,7 +89,7 @@ export default function AdminCategories() {
         actions={<Button onClick={openNew} icon={<Plus className="h-4 w-4" />}>Nova categoria</Button>} />
 
       {loading ? (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-3">{Array.from({ length: 6 }).map((_, i) => <Skeleton key={i} className="h-24" />)}</div>
       ) : rows.length === 0 ? (
         <EmptyState icon={<Tags />} title="Nenhuma categoria" description="Crie categorias para organizar os fornecedores."
           action={<Button onClick={openNew} icon={<Plus className="h-4 w-4" />}>Criar categoria</Button>} />

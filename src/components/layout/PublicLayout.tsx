@@ -105,7 +105,7 @@ export default function PublicLayout() {
       <main className="flex-1"><Outlet /></main>
 
       <footer className="border-t border-line bg-fornex-midnight">
-        <div className="container-fx grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+        <div className="container-fx grid grid-cols-2 gap-8 py-10 sm:gap-10 sm:py-14 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
             <Logo className="h-7" />
             <p className="mt-4 max-w-xs text-sm text-muted">{BRAND.tagline} Encontre, organize e contate fornecedores nacionais em um só lugar.</p>

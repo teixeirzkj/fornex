@@ -34,13 +34,13 @@ export default function Favorites() {
       <PageHeader eyebrow="Sua seleção" title="Favoritos"
         description={max != null ? `Você está usando ${ids.size} de ${max} favoritos do seu plano.` : 'Fornecedores salvos para consulta rápida.'} />
       {loading ? (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 3 }).map((_, i) => <SupplierCardSkeleton key={i} />)}</div>
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-3">{Array.from({ length: 3 }).map((_, i) => <SupplierCardSkeleton key={i} />)}</div>
       ) : visible.length === 0 ? (
         <EmptyState icon={<Heart />} title="Você ainda não tem favoritos"
           description="Toque no coração de um fornecedor para salvá-lo aqui."
           action={<ButtonLink to="/app/fornecedores">Explorar fornecedores</ButtonLink>} />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-4 xl:grid-cols-3">
           <AnimatePresence>{visible.map((s, i) => <SupplierCard key={s.id} s={s} index={i} />)}</AnimatePresence>
         </div>
       )}

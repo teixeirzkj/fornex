@@ -142,16 +142,19 @@ export default function AppLayout() {
 
         <AnimatePresence>
           {open && (
-            <div className="fixed inset-0 z-50 lg:hidden">
-              <motion.div className="absolute inset-0 bg-fornex-midnight/70 backdrop-blur-sm" onClick={() => setOpen(false)}
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
-              <motion.aside initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} transition={{ duration: 0.5, ease: EASE }}
-                className="absolute inset-y-0 left-0 w-72 border-r border-line bg-fornex-navy">
-                <button type="button" onClick={() => setOpen(false)} aria-label="Fechar menu"
+            <motion.div key="menu-overlay" className="fixed inset-0 z-50 bg-fornex-midnight/70 backdrop-blur-sm lg:hidden"
+              onClick={() => setOpen(false)} aria-hidden
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0, pointerEvents: 'none' }}
+              transition={{ duration: 0.3 }} />
+          )}
+          {open && (
+            <motion.aside key="menu-drawer" initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%', pointerEvents: 'none' }}
+              transition={{ duration: 0.4, ease: EASE }}
+              className="fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] border-r border-line bg-fornex-navy lg:hidden">
+              <button type="button" onClick={() => setOpen(false)} aria-label="Fechar menu"
                   className="absolute right-3 top-4 rounded-fx-sm p-2 text-muted hover:text-fg"><X className="h-5 w-5" /></button>
-                <SidebarContent onNavigate={() => setOpen(false)} unread={unread} />
-              </motion.aside>
-            </div>
+              <SidebarContent onNavigate={() => setOpen(false)} unread={unread} />
+            </motion.aside>
           )}
         </AnimatePresence>
 

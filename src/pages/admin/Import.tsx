@@ -359,7 +359,7 @@ export default function AdminImport() {
 
       {step === 'preview' && (
         <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             <div className="card p-4"><p className="text-xs uppercase tracking-wider text-muted">Linhas</p><p className="mt-1 text-2xl font-bold">{formatNumber(parsed.length)}</p></div>
             <div className="card p-4"><p className="text-xs uppercase tracking-wider text-muted">Válidas</p><p className="mt-1 text-2xl font-bold text-emerald-400">{formatNumber(validCount)}</p></div>
             <div className="card p-4"><p className="text-xs uppercase tracking-wider text-muted">Com erro (ignoradas)</p><p className="mt-1 text-2xl font-bold text-red-400">{formatNumber(parsed.length - validCount)}</p></div>

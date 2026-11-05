@@ -161,19 +161,19 @@ export default function Overview() {
         </section>
       </div>
 
-      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+      <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
         {[
           { to: '/app/fornecedores', icon: Search, title: 'Pesquisar fornecedores', text: 'Filtre por categoria, estado e nome.' },
           { to: '/app/categorias', icon: LayoutGrid, title: 'Navegar por categorias', text: 'Encontre o nicho ideal para sua loja.' },
           { to: '/app/suporte', icon: Megaphone, title: 'Falar com o suporte', text: 'Tire dúvidas sobre a plataforma.' },
         ].map((a) => (
-          <Link key={a.to} to={a.to} className="card group flex items-center gap-4 p-4 transition hover:border-accent/40">
+          <Link key={a.to} to={a.to} className="card group flex flex-col items-center gap-2 p-3 text-center transition hover:border-accent/40 sm:flex-row sm:gap-4 sm:p-4 sm:text-left">
             <span className="grid h-10 w-10 place-items-center rounded-fx-md bg-accent/10 text-accent"><a.icon className="h-5 w-5" /></span>
             <span className="flex-1">
-              <span className="block text-sm font-semibold text-fg">{a.title}</span>
-              <span className="block text-xs text-muted">{a.text}</span>
+              <span className="block text-xs font-semibold leading-tight text-fg sm:text-sm">{a.title}</span>
+              <span className="hidden text-xs text-muted sm:block">{a.text}</span>
             </span>
-            <ArrowRight className="h-4 w-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-accent" />
+            <ArrowRight className="hidden h-4 w-4 text-muted transition group-hover:translate-x-0.5 group-hover:text-accent sm:block" />
           </Link>
         ))}
       </div>
