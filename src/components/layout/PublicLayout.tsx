@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
+import { RouteOutlet } from '@/components/layout/RouteOutlet'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowRight, Menu, X } from 'lucide-react'
 import { Logo } from '@/components/ui/Logo'
@@ -102,7 +103,7 @@ export default function PublicLayout() {
         </AnimatePresence>
       </header>
 
-      <main className="flex-1"><Outlet /></main>
+      <main className="flex-1"><RouteOutlet /></main>
 
       <footer className="border-t border-line bg-fornex-midnight">
         <div className="container-fx grid grid-cols-2 gap-8 py-10 sm:gap-10 sm:py-14 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">

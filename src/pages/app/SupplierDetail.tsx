@@ -3,13 +3,14 @@ import { Link, useParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   ArrowLeft, AtSign, Camera, Check, Copy, ExternalLink, Globe, Mail, MapPin, MessageCircle, Music2, Package, ThumbsUp,
-  Phone, ShieldCheck, Truck, FileText, StickyNote, Lock, ImageOff,
+  Phone, ShieldCheck, Truck, FileText, StickyNote, Lock, ImageOff, Upload,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { copyToClipboard, formatBRL, formatDate, formatNumber, safeUrl, socialUrl, whatsappUrl } from '@/lib/utils'
 import type { Supplier, SupplierProduct } from '@/types/db'
 import { FavoriteButton, SupplierLogo } from '@/components/app/Shared'
+import { PublishModal } from '@/components/app/PublishModal'
 import { Button, ButtonLink } from '@/components/ui/Button'
 import { Badge, EmptyState, Skeleton } from '@/components/ui/Feedback'
 import { CategoryIcon } from '@/components/ui/CategoryIcon'
@@ -27,6 +28,7 @@ export default function SupplierDetail() {
   const [products, setProducts] = useState<SupplierProduct[]>([])
   const [productTotal, setProductTotal] = useState(0)
   const [loadingMore, setLoadingMore] = useState(false)
+  const [publishing, setPublishing] = useState<SupplierProduct | null>(null)
 
   useEffect(() => {
     let active = true
@@ -152,7 +154,7 @@ export default function SupplierDetail() {
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-2.5 sm:gap-3 xl:grid-cols-3">
-                  {products.map((p) => <ProductCard key={p.id} p={p} />)}
+                  {products.map((p) => <ProductCard key={p.id} p={p} onPublish={setPublishing} />)}
                 </div>
                 {products.length < productTotal && (
                   <div className="mt-5 flex justify-center">
@@ -193,6 +195,7 @@ export default function SupplierDetail() {
           </div>
         </aside>
       </div>
+      <PublishModal product={publishing} open={!!publishing} onClose={() => setPublishing(null)} />
     </div>
   )
 }
@@ -235,7 +238,7 @@ function ContactRow({ icon, label, value, href, copyValue }: { icon: ReactNode; 
   )
 }
 
-function ProductCard({ p }: { p: SupplierProduct }) {
+function ProductCard({ p, onPublish }: { p: SupplierProduct; onPublish: (p: SupplierProduct) => void }) {
   const img = safeUrl(p.image_url)
   const link = safeUrl(p.product_url)
   const body = (
@@ -253,7 +256,15 @@ function ProductCard({ p }: { p: SupplierProduct }) {
       </div>
     </div>
   )
-  return link ? <a href={link} target="_blank" rel="noopener noreferrer" className="block">{body}</a> : body
+  return (
+    <div className="flex h-full flex-col">
+      {link ? <a href={link} target="_blank" rel="noopener noreferrer" className="block flex-1">{body}</a> : <div className="flex-1">{body}</div>}
+      <Button size="sm" variant="subtle" className="mt-1.5 w-full" icon={<Upload className="h-3.5 w-3.5" />} onClick={() => onPublish(p)}
+        disabled={!p.price_cents || !p.stock}>
+        {p.stock ? 'Publicar no ML' : 'Sem estoque'}
+      </Button>
+    </div>
+  )
 }
 
 function DetailSkeleton() {

@@ -7,14 +7,14 @@ type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'subtle'
 type Size = 'sm' | 'md' | 'lg' | 'icon'
 
 const base =
-  'relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-fx-md font-medium transition duration-300 ease-fx active:scale-[.98] disabled:pointer-events-none disabled:opacity-55'
+  'relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-fx-md font-medium transition-all duration-300 ease-fx active:translate-y-0 active:scale-[.98] disabled:pointer-events-none disabled:opacity-55'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-fornex-electric text-white shadow-cta hover:bg-fornex-electric-hover',
-  secondary: 'border border-line bg-transparent text-fg hover:border-accent/50 hover:bg-surface-2/60',
+  primary: 'bg-fornex-electric text-white shadow-cta hover:-translate-y-0.5 hover:bg-fornex-electric-hover hover:shadow-[0_14px_30px_-10px_rgba(21,94,239,.75)]',
+  secondary: 'border border-line bg-transparent text-fg hover:-translate-y-0.5 hover:border-accent/50 hover:bg-surface-2/60 hover:shadow-[0_12px_26px_-16px_rgba(0,0,0,.7)]',
   ghost: 'text-muted hover:bg-surface-2/70 hover:text-fg',
-  subtle: 'bg-accent/10 text-accent hover:bg-accent/15',
-  danger: 'bg-fornex-danger/90 text-white hover:bg-fornex-danger',
+  subtle: 'bg-accent/10 text-accent hover:-translate-y-0.5 hover:bg-accent/15 hover:shadow-[0_10px_22px_-14px_rgba(21,94,239,.6)]',
+  danger: 'bg-fornex-danger/90 text-white hover:-translate-y-0.5 hover:bg-fornex-danger hover:shadow-[0_12px_26px_-12px_rgba(220,38,38,.6)]',
 }
 const sizes: Record<Size, string> = {
   sm: 'h-9 px-3 text-sm',

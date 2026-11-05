@@ -235,7 +235,7 @@ function Benefits() {
           className="mt-8 grid grid-cols-2 gap-3 sm:mt-14 sm:gap-4 lg:grid-cols-4">
           {BENEFITS.map((b) => (
             <motion.div key={b.title} variants={fadeUp} whileHover={{ y: -3 }}
-              className="card group p-4 transition-colors hover:border-accent/40 sm:p-6">
+              className="card card-hover group p-4 sm:p-6">
               <span className="grid h-9 w-9 place-items-center rounded-fx-md bg-accent/10 text-accent transition group-hover:bg-fornex-electric group-hover:text-white sm:h-11 sm:w-11">
                 <b.icon className="h-4 w-4 sm:h-5 sm:w-5" />
               </span>
@@ -373,7 +373,7 @@ function CategoriesSection() {
             ? Array.from({ length: 10 }).map((_, i) => <Skeleton key={i} className="h-20 rounded-fx-lg sm:h-28" />)
             : cats.map((c, i) => (
               <Reveal key={c.id} delay={(i % 5) * 0.04}>
-                <motion.div whileHover={{ y: -3 }} className="card flex h-full flex-col items-center gap-1.5 p-2 text-center transition-colors hover:border-accent/40 sm:items-start sm:gap-3 sm:p-4 sm:text-left">
+                <motion.div whileHover={{ y: -3 }} className="card card-hover flex h-full flex-col items-center gap-1.5 p-2 text-center sm:items-start sm:gap-3 sm:p-4 sm:text-left">
                   <span className="grid h-8 w-8 place-items-center rounded-fx-md bg-accent/10 text-accent sm:h-10 sm:w-10">
                     <CategoryIcon name={c.icon} className="h-4 w-4 sm:h-5 sm:w-5" />
                   </span>
@@ -401,7 +401,7 @@ function Differentials() {
         <div className="grid grid-cols-2 gap-3 sm:gap-4">
           {DIFFERENTIALS.map((d, i) => (
             <Reveal key={d.title} delay={i * 0.06}>
-              <div className="card h-full p-4 sm:p-5">
+              <div className="card card-hover h-full p-4 sm:p-5">
                 <d.icon className="h-4 w-4 text-fornex-ice sm:h-5 sm:w-5" />
                 <h3 className="mt-3 text-sm font-bold text-fg sm:mt-4 sm:text-base">{d.title}</h3>
                 <p className="mt-1 text-xs text-muted sm:mt-1.5 sm:text-sm">{d.text}</p>

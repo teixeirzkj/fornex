@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { RouteOutlet } from '@/components/layout/RouteOutlet'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   ArrowLeft, Building, CreditCard, Layers, LayoutDashboard, LogOut, Megaphone, Menu, PanelLeftClose, PanelLeftOpen,
@@ -135,8 +136,8 @@ export default function AdminLayout() {
           </div>
         </header>
         <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
-          <PageTransition key={location.pathname}>
-            <Outlet />
+          <PageTransition key={location.pathname} className="fx-reveal">
+            <RouteOutlet />
           </PageTransition>
         </main>
       </div>

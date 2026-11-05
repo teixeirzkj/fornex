@@ -1,4 +1,5 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { RouteOutlet } from '@/components/layout/RouteOutlet'
 import { motion } from 'framer-motion'
 import { Heart, Search, ShieldCheck } from 'lucide-react'
 import { Logo } from '@/components/ui/Logo'
@@ -49,7 +50,7 @@ export default function AuthLayout() {
         <div className="flex flex-1 items-center justify-center">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: EASE }}
             className="w-full max-w-sm">
-            <Outlet />
+            <RouteOutlet />
           </motion.div>
         </div>
       </main>

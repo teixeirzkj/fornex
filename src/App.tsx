@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { PageLoader } from '@/components/ui/Feedback'
 import { RequireAdmin, RequireAuth, RedirectIfAuthed } from '@/components/layout/Guards'
+import { prefetchRoutes } from '@/components/layout/RouteOutlet'
 
 // Layouts
 const PublicLayout = lazy(() => import('@/components/layout/PublicLayout'))
@@ -32,6 +33,9 @@ const History = lazy(() => import('@/pages/app/History'))
 const Updates = lazy(() => import('@/pages/app/Updates'))
 const SubscriptionPage = lazy(() => import('@/pages/app/Subscription'))
 const Checkout = lazy(() => import('@/pages/app/Checkout'))
+const Stores = lazy(() => import('@/pages/app/Stores'))
+const StoresCallback = lazy(() => import('@/pages/app/StoresCallback'))
+const Listings = lazy(() => import('@/pages/app/Listings'))
 const Account = lazy(() => import('@/pages/app/Account'))
 const Support = lazy(() => import('@/pages/app/Support'))
 
@@ -56,6 +60,7 @@ function ScrollToTop() {
 }
 
 export default function App() {
+  useEffect(() => { prefetchRoutes() }, [])
   return (
     <Suspense fallback={<PageLoader />}>
       <ScrollToTop />
@@ -84,6 +89,9 @@ export default function App() {
           <Route path="atualizacoes" element={<Updates />} />
           <Route path="assinatura" element={<SubscriptionPage />} />
           <Route path="checkout/:slug" element={<Checkout />} />
+          <Route path="lojas" element={<Stores />} />
+          <Route path="lojas/callback" element={<StoresCallback />} />
+          <Route path="anuncios" element={<Listings />} />
           <Route path="conta" element={<Account />} />
           <Route path="suporte" element={<Support />} />
         </Route>

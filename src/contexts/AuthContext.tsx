@@ -48,16 +48,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!isSupabaseConfigured) return
     let mounted = true
+    let lastUserId: string | null = null
     supabase.auth.getSession().then(async ({ data }) => {
       if (!mounted) return
+      lastUserId = data.session?.user.id ?? null
       setSession(data.session)
       await loadUserData(data.session)
       if (mounted) setLoading(false)
     })
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       setSession(s)
-      // Evita chamadas ao Supabase dentro do callback síncrono (deadlock conhecido)
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED') {
+      const uid = s?.user.id ?? null
+      // SIGNED_IN também dispara ao voltar para a aba: só recarrega se a pessoa logada mudou.
+      const changed = uid !== lastUserId
+      lastUserId = uid
+      // setTimeout evita chamadas ao Supabase dentro do callback síncrono (deadlock conhecido)
+      if (event === 'USER_UPDATED' || event === 'SIGNED_OUT' || (event === 'SIGNED_IN' && changed)) {
         setTimeout(() => { void loadUserData(s) }, 0)
       }
     })
@@ -74,12 +80,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setSession(null); setProfile(null); setSubscription(null); setAccessLevel(-1)
   }, [])
 
+  // Objeto do usuário estável entre renovações de token (evita recarregar telas à toa)
+  const userId = session?.user?.id ?? null
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const stableUser = useMemo(() => session?.user ?? null, [userId])
+
   const value = useMemo<AuthState>(() => ({
-    loading, session, user: session?.user ?? null, profile, subscription, accessLevel,
+    loading, session, user: stableUser, profile, subscription, accessLevel,
     isAdmin: profile?.role === 'admin',
     hasActiveSubscription: accessLevel >= 0,
     refresh, signOut,
-  }), [loading, session, profile, subscription, accessLevel, refresh, signOut])
+  }), [loading, session, stableUser, profile, subscription, accessLevel, refresh, signOut])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

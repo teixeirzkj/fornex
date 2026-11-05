@@ -47,7 +47,7 @@ export function PlanCard({ plan, onSelect, loading, currentPlanId, ctaLabel, cla
       whileHover={{ y: -3 }}
       transition={{ duration: 0.45, ease: EASE }}
       className={cn(
-        'relative flex h-full flex-col rounded-fx-lg border bg-surface p-6 text-center shadow-card sm:p-7',
+        'card-hover relative flex h-full flex-col rounded-fx-lg border bg-surface p-6 text-center shadow-card sm:p-7',
         plan.highlight ? 'border-accent/60 ring-1 ring-accent/30' : 'border-line',
         className,
       )}

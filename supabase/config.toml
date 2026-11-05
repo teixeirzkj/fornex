@@ -59,3 +59,7 @@ verify_jwt = false
 # Chamado pelos fornecedores: autenticado pelo header x-webhook-secret.
 [functions.integration-webhook]
 verify_jwt = false
+
+# Notificações do Mercado Livre (lojas dos clientes). O recurso é sempre reconsultado na API do ML.
+[functions.ml-webhook]
+verify_jwt = false

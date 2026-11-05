@@ -86,3 +86,15 @@ export interface AdminMetrics {
   mrr_cents: number; revenue_30d_cents: number; suppliers: number; suppliers_published: number
   products: number; integrations_active: number; integrations_error: number; views_30d: number
 }
+
+export interface MlAccount {
+  id: string; user_id: string; ml_user_id: number; nickname: string | null; site_id: string
+  status: 'active' | 'reconnect' | 'revoked'; expires_at: string | null; last_error: string | null; created_at: string
+}
+
+export interface MlListing {
+  id: string; ml_account_id: string; supplier_product_id: string | null; ml_item_id: string | null; permalink: string | null
+  title: string; price_cents: number; markup_percent: number; listing_type: 'gold_special' | 'gold_pro'
+  available_quantity: number; status: 'pending' | 'active' | 'paused' | 'closed' | 'under_review' | 'error'
+  last_error: string | null; last_synced_at: string | null; created_at: string
+}

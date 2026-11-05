@@ -1,9 +1,10 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
+import { RouteOutlet } from '@/components/layout/RouteOutlet'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Bell, Building2, CreditCard, Heart, History, LayoutDashboard, LayoutGrid, LifeBuoy, LogOut, Menu, Megaphone,
-  Search, Shield, UserRound, X,
+  Search, Shield, Store, Tag, UserRound, X,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 import { FavoritesProvider } from '@/hooks/useFavorites'
@@ -21,6 +22,10 @@ const NAV = [
     { to: '/app/favoritos', label: 'Favoritos', icon: Heart },
     { to: '/app/historico', label: 'Histórico', icon: History },
     { to: '/app/atualizacoes', label: 'Atualizações', icon: Megaphone, badge: true },
+  ] },
+  { group: 'Mercado Livre', items: [
+    { to: '/app/lojas', label: 'Minhas lojas', icon: Store },
+    { to: '/app/anuncios', label: 'Meus anúncios', icon: Tag },
   ] },
   { group: 'Conta', items: [
     { to: '/app/assinatura', label: 'Minha assinatura', icon: CreditCard },
@@ -180,9 +185,9 @@ export default function AppLayout() {
           <main className={cn('min-h-[calc(100vh-4rem)] transition-colors duration-300', light ? 'fx-light bg-bg text-fg' : 'bg-bg')}>
             <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
               {/* Entrada suave e imediata (sem esperar a página anterior sair) */}
-              <motion.div key={pathname} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }}
+              <motion.div key={pathname} className="fx-reveal" initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, ease: EASE }}>
-                <Outlet />
+                <RouteOutlet />
               </motion.div>
             </div>
           </main>
