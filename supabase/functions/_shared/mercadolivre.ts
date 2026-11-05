@@ -123,3 +123,38 @@ export function mapItemStatus(s: unknown): 'active' | 'paused' | 'closed' | 'und
     default: return 'pending'
   }
 }
+
+/** Motivos de pausa/revisão informados pelo ML (item.sub_status e tags) em português */
+const ITEM_REASONS: Record<string, string> = {
+  out_of_stock: 'sem estoque',
+  picture_download_pending: 'o Mercado Livre ainda está baixando as fotos',
+  picture_downloading_pending: 'o Mercado Livre ainda está baixando as fotos',
+  poor_quality_picture: 'a foto foi recusada por qualidade (use foto real do produto, fundo branco, sem logos ou textos)',
+  poor_quality_thumbnail: 'a foto principal foi recusada (use foto real do produto, fundo branco, sem logos ou textos)',
+  picture_with_logo: 'a foto tem logo ou marca d’água',
+  waiting_for_patch: 'o Mercado Livre pede correções no anúncio (abra o anúncio no ML para ver o que ajustar)',
+  held: 'o anúncio está retido em revisão pelo Mercado Livre',
+  under_review: 'o anúncio está em revisão pelo Mercado Livre',
+  suspended: 'o anúncio foi suspenso pelo Mercado Livre',
+  forbidden: 'o anúncio infringe uma política do Mercado Livre',
+  freezed: 'o anúncio foi congelado pelo Mercado Livre',
+  pending_documentation: 'o Mercado Livre pede documentação do produto',
+  incomplete_technical_specs: 'faltam dados da ficha técnica',
+  moderation_penalty: 'penalidade de moderação do Mercado Livre',
+  shipping_mode_pending: 'falta configurar o envio (Mercado Envios) na conta',
+}
+
+/** Explicação legível do status atual de um anúncio (null quando ativo e sem pendências) */
+export function itemReason(item: Record<string, unknown>): string | null {
+  const status = String(item.status ?? '')
+  const codes = [
+    ...(Array.isArray(item.sub_status) ? item.sub_status as string[] : []),
+    ...(Array.isArray(item.tags) ? (item.tags as string[]).filter((t) => t in ITEM_REASONS) : []),
+  ]
+  if (status === 'active' && codes.length === 0) return null
+  const known = [...new Set(codes.map((c) => ITEM_REASONS[c]).filter(Boolean))]
+  if (known.length) return `Motivo: ${known.join('; ')}.`
+  if (codes.length) return `Pendências informadas pelo ML: ${codes.join(', ')}.`
+  if (status === 'paused') return 'Pausado no Mercado Livre. Abra o anúncio no ML para ver o motivo.'
+  return null
+}

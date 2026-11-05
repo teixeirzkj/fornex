@@ -5,7 +5,7 @@
 
 import { adminClient } from '../_shared/auth.ts'
 import { json } from '../_shared/http.ts'
-import { getAccessToken, mapItemStatus, mlFetch } from '../_shared/mercadolivre.ts'
+import { getAccessToken, itemReason, mapItemStatus, mlFetch } from '../_shared/mercadolivre.ts'
 import { formatBRLServer } from './format.ts'
 
 Deno.serve(async (req) => {
@@ -37,6 +37,7 @@ Deno.serve(async (req) => {
         const item = await mlFetch<Record<string, unknown>>(token, `/items/${itemId}`)
         await db.from('ml_listings').update({
           status: mapItemStatus(item.status),
+          last_error: itemReason(item),
           available_quantity: Number(item.available_quantity ?? 0),
           price_cents: Math.round(Number(item.price ?? 0) * 100) || undefined,
           permalink: typeof item.permalink === 'string' ? item.permalink : undefined,

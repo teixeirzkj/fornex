@@ -87,7 +87,7 @@ export default function Listings() {
                       {storeName[l.ml_account_id] ?? 'Loja'} · {formatBRL(l.price_cents)} · margem {Number(l.markup_percent)}% · {l.available_quantity} em estoque
                       {l.last_synced_at && ` · atualizado ${timeAgo(l.last_synced_at)}`}
                     </p>
-                    {l.status === 'error' && l.last_error && <p className="mt-1.5 text-xs text-red-400">{l.last_error}</p>}
+                    {l.last_error && <p className={`mt-1.5 text-xs ${l.status === 'error' ? 'text-red-400' : 'text-amber-400'}`}>{l.last_error}</p>}
                   </div>
                   <div className="flex flex-wrap gap-1.5">
                     {l.permalink && (

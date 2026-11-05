@@ -6,7 +6,7 @@ import { createClient, type SupabaseClient } from 'npm:@supabase/supabase-js@2'
 import { corsHeaders, handlePreflight } from '../_shared/cors.ts'
 import { errorResponse, fail, HttpError, json, readJson, UUID_RE } from '../_shared/http.ts'
 import { adminClient, requireUser } from '../_shared/auth.ts'
-import { getAccessToken, mapItemStatus, MlError, mlFetch } from '../_shared/mercadolivre.ts'
+import { getAccessToken, itemReason, mapItemStatus, MlError, mlFetch } from '../_shared/mercadolivre.ts'
 
 const LISTING_COLUMNS = 'id, ml_account_id, supplier_product_id, ml_item_id, permalink, title, price_cents, markup_percent, listing_type, available_quantity, status, last_error, last_synced_at, created_at'
 
@@ -176,7 +176,7 @@ Deno.serve(async (req) => {
         user_id: user.id, ml_account_id: accountId, supplier_product_id: productId, ml_item_id: String(item.id),
         permalink: typeof item.permalink === 'string' ? item.permalink : null, title: finalTitle, price_cents: price,
         markup_percent: markup, listing_type: listingType, available_quantity: quantity,
-        status: mapItemStatus(item.status), last_error: null, last_synced_at: new Date().toISOString(),
+        status: mapItemStatus(item.status), last_error: itemReason(item), last_synced_at: new Date().toISOString(),
       }, { onConflict: 'ml_account_id,supplier_product_id' }).select(LISTING_COLUMNS).single()
       if (error) throw error
       return json(200, { listing }, cors)
@@ -208,15 +208,29 @@ Deno.serve(async (req) => {
       const stock = product?.is_active ? Math.max(0, Math.min(product?.stock ?? 0, 999)) : 0
       update.available_quantity = stock
       if (stock === 0 && listing.status === 'active') update.status = 'paused'
+
+      // Tenta atualizar preço/estoque; mesmo se o ML recusar (ex.: anúncio em moderação),
+      // relê o anúncio para mostrar o status e o motivo reais.
+      let pushError: string | null = null
+      let pushed = false
       try {
-        const item = await mlFetch<Record<string, unknown>>(token, `/items/${listing.ml_item_id}`, { method: 'PUT', body: update })
-        const { data } = await db.from('ml_listings').update({
-          price_cents: update.price ? Math.round(Number(update.price) * 100) : listing.price_cents,
-          available_quantity: stock, status: mapItemStatus(item.status), last_error: null,
-          permalink: typeof item.permalink === 'string' ? item.permalink : listing.permalink, last_synced_at: new Date().toISOString(),
-        }).eq('id', listing.id).select(LISTING_COLUMNS).single()
-        return json(200, { listing: data }, cors)
-      } catch (e) { mlErrorToHttp(e) }
+        await mlFetch(token, `/items/${listing.ml_item_id}`, { method: 'PUT', body: update })
+        pushed = true
+      } catch (e) {
+        pushError = e instanceof MlError ? (e.causes[0] ?? e.message) : 'Não foi possível atualizar preço e estoque.'
+      }
+      let item: Record<string, unknown>
+      try { item = await mlFetch(token, `/items/${listing.ml_item_id}`) } catch (e) { mlErrorToHttp(e) }
+      const reason = itemReason(item)
+      const { data } = await db.from('ml_listings').update({
+        price_cents: Math.round(Number(item.price ?? 0) * 100) || listing.price_cents,
+        available_quantity: Number(item.available_quantity ?? (pushed ? stock : listing.available_quantity)),
+        status: mapItemStatus(item.status),
+        last_error: [reason, pushError ? `Atualização recusada: ${pushError}` : null].filter(Boolean).join(' ') || null,
+        permalink: typeof item.permalink === 'string' ? item.permalink : listing.permalink,
+        last_synced_at: new Date().toISOString(),
+      }).eq('id', listing.id).select(LISTING_COLUMNS).single()
+      return json(200, { listing: data }, cors)
     }
 
     throw new HttpError(400, 'invalid_action', 'Ação inválida.')
