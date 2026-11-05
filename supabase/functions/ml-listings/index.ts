@@ -89,27 +89,46 @@ Deno.serve(async (req) => {
       } catch { /* sem sugestão */ }
       if (!categoryId) throw new HttpError(422, 'no_category', 'O Mercado Livre não encontrou uma categoria para este título. Ajuste o título e tente de novo.')
 
+      // Contas no modelo "User Products" (tag user_product_seller) não aceitam title:
+      // enviam family_name e o Mercado Livre gera o título do anúncio.
+      let userProducts = false
+      try {
+        const me = await mlFetch<{ tags?: string[] }>(token, '/users/me')
+        userProducts = Array.isArray(me.tags) && me.tags.includes('user_product_seller')
+      } catch { /* segue no formato clássico; o retry abaixo cobre */ }
+
+      const baseBody = {
+        category_id: categoryId,
+        price: price / 100,
+        currency_id: 'BRL',
+        available_quantity: quantity,
+        buying_mode: 'buy_it_now',
+        condition: 'new',
+        listing_type_id: listingType,
+        pictures: [{ source: product.image_url }],
+        attributes: [
+          { id: 'BRAND', value_name: (product.supplier?.name ?? 'Genérica').replace(/\s*\(Demo\)\s*$/i, '').slice(0, 60) },
+          { id: 'MODEL', value_name: (product.sku || product.name).slice(0, 60) },
+          ...(product.sku ? [{ id: 'SELLER_SKU', value_name: product.sku.slice(0, 60) }] : []),
+        ],
+      }
+      const postItem = (up: boolean) => mlFetch<Record<string, unknown>>(token, '/items', {
+        method: 'POST',
+        body: up ? { family_name: title, ...baseBody } : { title, ...baseBody },
+      })
+      const mentions = (e: unknown, word: string) =>
+        e instanceof MlError && [e.message, ...e.causes].some((m) => m.toLowerCase().includes(word))
+
       let item: Record<string, unknown>
       try {
-        item = await mlFetch(token, '/items', {
-          method: 'POST',
-          body: {
-            title,
-            category_id: categoryId,
-            price: price / 100,
-            currency_id: 'BRL',
-            available_quantity: quantity,
-            buying_mode: 'buy_it_now',
-            condition: 'new',
-            listing_type_id: listingType,
-            pictures: [{ source: product.image_url }],
-            attributes: [
-              { id: 'BRAND', value_name: (product.supplier?.name ?? 'Genérica').replace(/\s*\(Demo\)\s*$/i, '').slice(0, 60) },
-              { id: 'MODEL', value_name: (product.sku || product.name).slice(0, 60) },
-              ...(product.sku ? [{ id: 'SELLER_SKU', value_name: product.sku.slice(0, 60) }] : []),
-            ],
-          },
-        })
+        try {
+          item = await postItem(userProducts)
+        } catch (first) {
+          // Formato errado para esta conta: tenta o outro uma única vez
+          if (!userProducts && mentions(first, 'family_name')) item = await postItem(true)
+          else if (userProducts && mentions(first, 'title')) item = await postItem(false)
+          else throw first
+        }
       } catch (e) {
         await db.from('ml_listings').upsert({
           user_id: user.id, ml_account_id: accountId, supplier_product_id: productId, title, price_cents: price,
@@ -118,6 +137,8 @@ Deno.serve(async (req) => {
         }, { onConflict: 'ml_account_id,supplier_product_id' })
         mlErrorToHttp(e)
       }
+      // No modelo User Products o título final é gerado pelo Mercado Livre
+      const finalTitle = typeof item.title === 'string' && item.title ? item.title.slice(0, 200) : title
 
       if (product.description) {
         try {
@@ -127,7 +148,7 @@ Deno.serve(async (req) => {
 
       const { data: listing, error } = await db.from('ml_listings').upsert({
         user_id: user.id, ml_account_id: accountId, supplier_product_id: productId, ml_item_id: String(item.id),
-        permalink: typeof item.permalink === 'string' ? item.permalink : null, title, price_cents: price,
+        permalink: typeof item.permalink === 'string' ? item.permalink : null, title: finalTitle, price_cents: price,
         markup_percent: markup, listing_type: listingType, available_quantity: quantity,
         status: mapItemStatus(item.status), last_error: null, last_synced_at: new Date().toISOString(),
       }, { onConflict: 'ml_account_id,supplier_product_id' }).select(LISTING_COLUMNS).single()
