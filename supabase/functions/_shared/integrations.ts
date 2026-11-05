@@ -7,7 +7,7 @@ export interface IntegrationRow {
   id: string
   supplier_id: string
   name: string
-  type: 'rest_api' | 'webhook' | 'csv' | 'manual'
+  type: 'rest_api' | 'webhook' | 'csv' | 'manual' | 'dslite'
   status: 'draft' | 'active' | 'paused' | 'error'
   config: Record<string, unknown>
   sync_interval_minutes: number | null

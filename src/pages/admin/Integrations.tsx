@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button'
 import { Input, Select } from '@/components/ui/Field'
 import { Badge, Notice } from '@/components/ui/Feedback'
 import { Modal } from '@/components/ui/Modal'
+import { DsliteConnect } from '@/components/admin/DsliteConnect'
 
 const schema = z.object({
   supplier_id: z.string().uuid('Selecione o fornecedor'),
@@ -25,6 +26,7 @@ export default function AdminIntegrations() {
   const [status, setStatus] = useState('')
   const [type, setType] = useState('')
   const [open, setOpen] = useState(false)
+  const [dsliteOpen, setDsliteOpen] = useState(false)
   const [form, setForm] = useState<{ supplier_id: string; name: string; type: IntegrationType }>({ supplier_id: '', name: '', type: 'rest_api' })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [saving, setSaving] = useState(false)
@@ -56,7 +58,10 @@ export default function AdminIntegrations() {
   return (
     <div>
       <PageHeader title="Integrações" description="Conecte a FORNEX aos sistemas dos fornecedores para manter produtos e estoque atualizados."
-        actions={<Button onClick={() => { setErrors({}); setOpen(true) }} icon={<Plus className="h-4 w-4" />}>Nova integração</Button>} />
+        actions={<>
+          <Button variant="secondary" onClick={() => setDsliteOpen(true)} icon={<Plug className="h-4 w-4" />}>Conectar DSlite</Button>
+          <Button onClick={() => { setErrors({}); setOpen(true) }} icon={<Plus className="h-4 w-4" />}>Nova integração</Button>
+        </>} />
 
       <div className="mb-6 grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
         {(Object.entries(INTEGRATION_TYPES) as [IntegrationType, (typeof INTEGRATION_TYPES)[IntegrationType]][]).map(([k, t]) => (
@@ -120,6 +125,8 @@ export default function AdminIntegrations() {
           <Notice title="Somente integrações autorizadas">Use apenas APIs, webhooks ou planilhas fornecidos pelo próprio fornecedor. Não há coleta automática (scraping) de sites.</Notice>
         </div>
       </Modal>
+
+      <DsliteConnect open={dsliteOpen} onClose={() => setDsliteOpen(false)} onImported={() => { void load() }} />
     </div>
   )
 }

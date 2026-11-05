@@ -125,6 +125,7 @@ export const INTEGRATION_TYPES = {
   webhook: { label: 'Webhook', description: 'O sistema do fornecedor envia os produtos para a FORNEX.' },
   csv: { label: 'Planilha (CSV/Excel)', description: 'Atualização por importação de planilha no painel.' },
   manual: { label: 'Manual', description: 'Produtos e dados cadastrados à mão pelo administrador.' },
+  dslite: { label: 'DSlite', description: 'Catálogo, estoque, preço e fotos puxados do agregador DSlite.' },
 } as const
 
 /** Lista de fornecedores (id, nome) para selects */

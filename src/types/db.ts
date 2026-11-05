@@ -3,7 +3,7 @@ export type PlanInterval = 'free' | 'month' | 'year' | 'lifetime'
 export type SubscriptionStatus = 'pending' | 'active' | 'past_due' | 'paused' | 'canceled' | 'expired'
 export type Gateway = 'none' | 'manual' | 'mercadopago' | 'stripe'
 export type PaymentStatus = 'pending' | 'in_process' | 'approved' | 'rejected' | 'refunded' | 'canceled'
-export type IntegrationType = 'rest_api' | 'webhook' | 'csv' | 'manual'
+export type IntegrationType = 'rest_api' | 'webhook' | 'csv' | 'manual' | 'dslite'
 export type IntegrationStatus = 'draft' | 'active' | 'paused' | 'error'
 
 export interface Profile {
@@ -57,6 +57,9 @@ export interface IntegrationConfig {
   base_url?: string; method?: 'GET' | 'POST'; items_path?: string
   auth_header?: string; auth_scheme?: string; secret_env?: string
   price_unit?: 'reais' | 'cents'
+  // DSlite
+  env?: 'production' | 'homologacao'; fornecedorid?: string
+  price_field?: 'preco_dropshipping' | 'preco_crossdocking' | 'preco_normal'; sync_cursor?: number | null
   pagination?: { param: string; start: number; max_pages: number } | null
   field_map?: Partial<Record<'external_id' | 'name' | 'sku' | 'description' | 'price' | 'stock' | 'image_url' | 'product_url', string>>
 }

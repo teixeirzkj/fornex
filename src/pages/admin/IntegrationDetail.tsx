@@ -102,6 +102,11 @@ export default function IntegrationDetail() {
       items.push({ ok: !!cfg.secret_env, label: 'Segredo do webhook definido', detail: `Rode: supabase secrets set ${cfg.secret_env || 'SUPPLIER_NOME_WEBHOOK_SECRET'}=<valor forte> e envie o valor ao fornecedor.` })
       items.push({ ok: false, label: 'Fornecedor configurou o envio', detail: 'Envie ao fornecedor a URL e o header abaixo. Confirme pelo registro de logs.' })
     }
+    if (integration.type === 'dslite') {
+      items.push({ ok: !!cfg.secret_env, label: 'Token do DSlite guardado como secret', detail: `Rode no terminal: npx.cmd supabase secrets set --project-ref tfqqyskomsnmenpbgaiz ${cfg.secret_env || 'SUPPLIER_DSLITE_TOKEN'}=SEU_TOKEN` })
+      items.push({ ok: !!integration.last_sync_at && integration.last_sync_status !== 'error', label: 'Primeira sincronização concluída', detail: 'Clique em Testar conexão e depois em Sincronizar agora.' })
+      items.push({ ok: status === 'active', label: 'Integração ativa', detail: 'Ativa = sincroniza sozinha no intervalo definido (com o agendamento ligado).' })
+    }
     if (integration.type === 'rest_api' || integration.type === 'webhook') {
       items.push({ ok: !!fm.external_id && !!fm.name, label: 'Mapeamento mínimo (ID externo e nome)' })
       items.push({ ok: !fnUnavailable, label: 'Edge Functions publicadas', detail: 'supabase functions deploy integration-sync integration-webhook' })
@@ -112,6 +117,27 @@ export default function IntegrationDetail() {
 
   async function save(silent = false) {
     if (!integration) return false
+    if (integration.type === 'dslite') {
+      const errs: Record<string, string> = {}
+      const secret = (cfg.secret_env ?? 'SUPPLIER_DSLITE_TOKEN').trim()
+      if (!SECRET_RE.test(secret)) errs.secret_env = 'Deve seguir o padrão SUPPLIER_NOME_TOKEN'
+      if (!/^\d{1,14}$/.test(String(cfg.fornecedorid ?? ''))) errs.fornecedorid = 'ID do fornecedor inválido'
+      const intervalNum = syncInterval ? Number.parseInt(syncInterval, 10) : null
+      if (intervalNum != null && (Number.isNaN(intervalNum) || intervalNum < 15)) errs.interval = 'Mínimo de 15 minutos'
+      setErrors(errs)
+      if (Object.keys(errs).length) { toast.error('Revise a configuração.'); return false }
+      setSaving(true)
+      const { error } = await supabase.from('integrations').update({
+        name: name.trim(), status, sync_interval_minutes: intervalNum,
+        config: { env: cfg.env === 'homologacao' ? 'homologacao' : 'production', secret_env: secret, fornecedorid: String(cfg.fornecedorid),
+          price_field: cfg.price_field ?? 'preco_dropshipping', sync_cursor: cfg.sync_cursor ?? null },
+      }).eq('id', integration.id)
+      setSaving(false)
+      if (error) { toast.error(errorMessage(error)); return false }
+      if (!silent) toast.success('Configuração salva.')
+      void load()
+      return true
+    }
     const cleanMap = Object.fromEntries(Object.entries(cfg.field_map ?? {}).filter(([, v]) => v && v.trim()))
     const candidate: IntegrationConfig = {
       ...cfg,
@@ -209,6 +235,31 @@ export default function IntegrationDetail() {
               </Select>
             </div>
           </section>
+
+          {integration.type === 'dslite' && (
+            <section className="card p-5 sm:p-6">
+              <h2 className="font-semibold">Conexão com o DSlite</h2>
+              <p className="mt-0.5 text-sm text-muted">Catálogo, estoque, preços e fotos vêm direto do DSlite. O token fica guardado como secret no Supabase, nunca no banco.</p>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                <Select label="Ambiente" value={cfg.env ?? 'production'} onChange={(e) => setC('env', e.target.value as 'production' | 'homologacao')}>
+                  <option value="production">Produção</option>
+                  <option value="homologacao">Homologação (testes, valores fictícios)</option>
+                </Select>
+                <Input label="Nome da secret do token" value={cfg.secret_env ?? 'SUPPLIER_DSLITE_TOKEN'} error={errors.secret_env}
+                  onChange={(e) => setC('secret_env', e.target.value.toUpperCase())} />
+                <Input label="ID do fornecedor no DSlite" value={cfg.fornecedorid ?? ''} error={errors.fornecedorid} inputMode="numeric"
+                  onChange={(e) => setC('fornecedorid', e.target.value.replace(/\D/g, ''))} />
+                <Select label="Preço de custo usado" value={cfg.price_field ?? 'preco_dropshipping'}
+                  onChange={(e) => setC('price_field', e.target.value as 'preco_dropshipping' | 'preco_crossdocking' | 'preco_normal')}>
+                  <option value="preco_dropshipping">Preço dropshipping</option>
+                  <option value="preco_crossdocking">Preço cross-docking</option>
+                  <option value="preco_normal">Preço normal</option>
+                </Select>
+              </div>
+              <p className="mt-3 text-xs text-muted">Se o preço escolhido vier zerado para um produto, o sistema usa o próximo disponível (dropshipping → cross-docking → normal).</p>
+              {cfg.sync_cursor ? <p className="mt-2 text-xs text-amber-400">Sincronização em andamento: continua a partir da página {cfg.sync_cursor} na próxima execução.</p> : null}
+            </section>
+          )}
 
           {integration.type === 'rest_api' && (
             <section className="card p-5 sm:p-6">
@@ -379,10 +430,10 @@ ${examplePayload}`}</pre>
         </div>
 
         <aside className="space-y-4">
-          {integration.type === 'rest_api' && (
+          {(integration.type === 'rest_api' || integration.type === 'dslite') && (
             <div className="card space-y-2 p-5">
               <h2 className="font-semibold">Executar</h2>
-              <p className="text-sm text-muted">O teste lê a API e mostra uma amostra sem gravar nada.</p>
+              <p className="text-sm text-muted">O teste lê a primeira página e mostra uma amostra sem gravar nada. A sincronização grava os produtos.</p>
               <Button variant="secondary" className="w-full" loading={testing} disabled={syncing} onClick={() => run(true)} icon={<FlaskConical className="h-4 w-4" />}>Testar conexão</Button>
               <Button className="w-full" loading={syncing} disabled={testing} onClick={() => run(false)} icon={<RefreshCw className="h-4 w-4" />}>Sincronizar agora</Button>
             </div>
