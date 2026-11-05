@@ -1,0 +1,41 @@
+-- =====================================================================
+-- OPCIONAL — Sincronização automática das integrações (a cada 15 min)
+-- NÃO é executado automaticamente. Rode manualmente no SQL Editor
+-- depois de publicar a função integration-sync.
+--
+-- Pré-requisitos:
+--   1. Habilite as extensões pg_cron e pg_net (Database > Extensions).
+--   2. Gere um segredo forte (ex.: openssl rand -hex 32) e defina na função:
+--        supabase secrets set CRON_SECRET=<segredo>
+--   3. Guarde o MESMO segredo, a URL do projeto e a anon key no Vault:
+--        select vault.create_secret('<segredo>', 'fornex_cron_secret');
+--        select vault.create_secret('https://<projeto>.supabase.co', 'fornex_project_url');
+--        select vault.create_secret('<anon key>', 'fornex_anon_key');
+--   4. Descomente e rode o bloco abaixo.
+--
+-- Só são sincronizadas integrações do tipo rest_api, com status 'active'
+-- e sync_interval_minutes preenchido (mínimo 15).
+-- =====================================================================
+
+-- create extension if not exists pg_cron;
+-- create extension if not exists pg_net;
+--
+-- select cron.schedule(
+--   'fornex-integration-sync',
+--   '*/15 * * * *',
+--   $$
+--   select net.http_post(
+--     url     := (select decrypted_secret from vault.decrypted_secrets where name = 'fornex_project_url') || '/functions/v1/integration-sync',
+--     headers := jsonb_build_object(
+--       'Content-Type',  'application/json',
+--       -- a anon key satisfaz o verify_jwt da função; a autorização real é o x-cron-secret
+--       'Authorization', 'Bearer ' || (select decrypted_secret from vault.decrypted_secrets where name = 'fornex_anon_key'),
+--       'x-cron-secret', (select decrypted_secret from vault.decrypted_secrets where name = 'fornex_cron_secret')
+--     ),
+--     body    := '{"run_due": true}'::jsonb,
+--     timeout_milliseconds := 120000
+--   );
+--   $$
+-- );
+--
+-- Para remover:  select cron.unschedule('fornex-integration-sync');

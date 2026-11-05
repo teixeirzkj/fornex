@@ -1,0 +1,61 @@
+@import './styles/fornex-design-tokens.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Tema escuro (padrão): Midnight + Deep Navy */
+  :root {
+    --c-bg: 8 15 29;          /* #080F1D midnight */
+    --c-surface: 16 29 51;    /* #101D33 deep navy */
+    --c-surface-2: 21 37 64;
+    --c-line: 34 50 74;       /* #22324A border dark */
+    --c-fg: 248 250 252;
+    --c-muted: 148 163 184;
+    --c-primary: 21 94 239;   /* #155EEF electric */
+    --c-accent: 59 130 246;   /* #3B82F6 bright */
+    color-scheme: dark;
+  }
+  /* Superfície clara para leitura (catálogo): Cloud + White */
+  .fx-light {
+    --c-bg: 244 247 252;      /* #F4F7FC cloud */
+    --c-surface: 255 255 255;
+    --c-surface-2: 238 242 249;
+    --c-line: 222 229 240;
+    --c-fg: 8 15 29;
+    --c-muted: 100 116 139;   /* #64748B slate */
+    --c-accent: 21 94 239;
+    color-scheme: light;
+  }
+  html { -webkit-tap-highlight-color: transparent; }
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  h1, h2, h3, h4 { @apply font-heading tracking-tight; }
+  ::selection { background: rgb(59 130 246 / .35); }
+  :focus-visible { outline: 2px solid var(--fx-bright-blue); outline-offset: 2px; border-radius: 6px; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  }
+}
+
+@layer components {
+  .container-fx { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
+  .card { @apply rounded-fx-lg border border-line bg-surface shadow-card; }
+  .fx-light .card { @apply shadow-soft; }
+  .eyebrow { @apply inline-flex items-center gap-2 rounded-full border border-line bg-surface/60 px-3 py-1 text-[11px] font-semibold uppercase tracking-[.14em] text-fornex-ice; }
+  .fx-light .eyebrow { @apply text-fornex-electric; }
+  .label { @apply mb-1.5 block text-sm font-medium text-fg; }
+  .field {
+    @apply w-full rounded-fx-md border border-line bg-bg/60 px-3.5 py-2.5 text-sm text-fg placeholder:text-muted/70
+      transition duration-300 ease-fx focus:border-accent focus:outline-none focus:ring-4 focus:ring-accent/15 disabled:opacity-60;
+  }
+  .fx-light .field { @apply bg-white; }
+  .grid-bg {
+    background-image: linear-gradient(rgb(147 197 253 / .05) 1px, transparent 1px), linear-gradient(90deg, rgb(147 197 253 / .05) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgb(var(--c-line)); border-radius: 8px; }
+}

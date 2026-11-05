@@ -1,0 +1,14 @@
+{
+  "midnight": "#080F1D",
+  "deep_navy": "#101D33",
+  "electric_blue": "#155EEF",
+  "bright_blue": "#3B82F6",
+  "ice_blue": "#93C5FD",
+  "cloud": "#F4F7FC",
+  "white": "#FFFFFF",
+  "slate": "#64748B",
+  "border_dark": "#22324A",
+  "success": "#16A34A",
+  "warning": "#D97706",
+  "danger": "#DC2626"
+}

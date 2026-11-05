@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+<title id="title">FORNEX symbol</title>
+<defs><linearGradient id="g" x1="18" y1="16" x2="108" y2="112" gradientUnits="userSpaceOnUse"><stop stop-color="#60A5FA"/><stop offset="1" stop-color="#155EEF"/></linearGradient></defs>
+<path d="M37 100V28H99" fill="none" stroke="#080F1D" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M37 63H82" fill="none" stroke="#080F1D" stroke-width="13" stroke-linecap="round"/>
+<circle cx="99" cy="28" r="8" fill="#080F1D"/>
+<circle cx="82" cy="63" r="6" fill="#080F1D"/>
+</svg>

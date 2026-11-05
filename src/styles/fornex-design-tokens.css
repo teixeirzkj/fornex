@@ -1,0 +1,34 @@
+:root {
+  /* FORNEX brand colors */
+  --fx-midnight: #080F1D;
+  --fx-deep-navy: #101D33;
+  --fx-electric-blue: #155EEF;
+  --fx-bright-blue: #3B82F6;
+  --fx-ice-blue: #93C5FD;
+  --fx-cloud: #F4F7FC;
+  --fx-white: #FFFFFF;
+  --fx-slate: #64748B;
+  --fx-border-dark: #22324A;
+
+  /* Semantic colors */
+  --fx-bg: var(--fx-midnight);
+  --fx-surface: var(--fx-deep-navy);
+  --fx-primary: var(--fx-electric-blue);
+  --fx-primary-hover: #124FCC;
+  --fx-text: #F8FAFC;
+  --fx-text-muted: #94A3B8;
+  --fx-border: var(--fx-border-dark);
+
+  /* Typography */
+  --fx-font-heading: "Manrope", "Inter", sans-serif;
+  --fx-font-body: "Inter", "Manrope", sans-serif;
+
+  /* Shape and motion */
+  --fx-radius-sm: 8px;
+  --fx-radius-md: 12px;
+  --fx-radius-lg: 18px;
+  --fx-radius-xl: 24px;
+  --fx-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --fx-duration-fast: 160ms;
+  --fx-duration-normal: 260ms;
+}

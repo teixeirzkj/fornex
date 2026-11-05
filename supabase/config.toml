@@ -1,0 +1,14 @@
+# Configuração mínima do Supabase CLI para o projeto FORNEX.
+# Gere o restante com `supabase init` se precisar rodar localmente.
+project_id = "fornex"
+
+# Funções chamadas pelo navegador exigem JWT (padrão verify_jwt = true):
+# create-checkout, manage-subscription, integration-sync.
+
+# Chamado pelo Mercado Pago — a autenticidade é validada pela assinatura x-signature.
+[functions.mercadopago-webhook]
+verify_jwt = false
+
+# Chamado pelos fornecedores — autenticado pelo header x-webhook-secret.
+[functions.integration-webhook]
+verify_jwt = false

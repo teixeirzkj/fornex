@@ -1,0 +1,40 @@
+{
+  "name": "fornex",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.0",
+    "clsx": "^2.1.1",
+    "framer-motion": "^11.18.2",
+    "lucide-react": "^1.68.0",
+    "papaparse": "^5.7.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.18.5",
+    "read-excel-file": "^9.3.14",
+    "sonner": "^2.0.8",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.5.2",
+    "@types/react": "^18.3.31",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "autoprefixer": "^10.6.2",
+    "postcss": "^8.5.32",
+    "supabase": "^3.0.0",
+    "tailwindcss": "3.4",
+    "typescript": "5.6",
+    "vite": "^6.4.5"
+  },
+  "allowScripts": {
+    "esbuild@0.25.12": true
+  }
+}
