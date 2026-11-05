@@ -12,13 +12,33 @@ const LISTING_COLUMNS = 'id, ml_account_id, supplier_product_id, ml_item_id, per
 
 function mlErrorToHttp(e: unknown): never {
   if (e instanceof MlError) {
+    if ([e.message, ...e.causes].some((m) => m.includes('unable_to_list'))) {
+      throw new HttpError(422, 'seller_unable_to_list', sellerBlockMessage([]))
+    }
     const detail = e.causes.length ? e.causes.slice(0, 4).join(' · ') : e.message
     throw new HttpError(422, 'ml_rejected', `O Mercado Livre recusou: ${detail}`)
   }
   throw e
 }
 
-const priceWithMarkup = (cents: number, markup: number) => Math.max(100, Math.round(cents * (1 + markup / 100)))
+/** Pendências do cadastro que impedem a conta de anunciar (users/me → status.list.codes) */
+const SELLER_CODES: Record<string, string> = {
+  address_pending: 'cadastrar seu endereço', address_empty: 'cadastrar seu endereço',
+  phone_pending: 'confirmar seu telefone', phone_empty: 'cadastrar seu telefone',
+  email_not_validated: 'confirmar seu e-mail', unconfirmed: 'confirmar seu e-mail',
+  identification_pending: 'informar seu CPF/CNPJ', document_pending: 'informar seu CPF/CNPJ',
+  kyc_pending: 'validar sua identidade (envio de documento e selfie)', kyc_required: 'validar sua identidade (envio de documento e selfie)',
+  fiscal_data_pending: 'preencher seus dados fiscais', billing_info_pending: 'preencher seus dados de faturamento',
+  shipping_preferences_pending: 'configurar suas preferências de envio', mercadopago_account_pending: 'ativar sua conta do Mercado Pago',
+  first_time_seller: 'concluir o cadastro de vendedor', seller_restricted: 'resolver uma restrição na sua conta (veja as mensagens do Mercado Livre)',
+}
+function sellerBlockMessage(codes: string[]) {
+  const steps = [...new Set(codes.map((c) => SELLER_CODES[c] ?? null).filter(Boolean))]
+  const known = steps.length ? ` Falta: ${steps.join(', ')}.` : codes.length ? ` Pendências informadas pelo ML: ${codes.join(', ')}.` : ''
+  return `Esta conta do Mercado Livre ainda não está liberada para anunciar.${known} Conclua em mercadolivre.com.br → Vender e tente novamente.`
+}
+
+const priceWithMarkup =(cents: number, markup: number) => Math.max(100, Math.round(cents * (1 + markup / 100)))
 
 /** Produto visto COM AS PERMISSÕES DO CLIENTE (RLS garante que o plano dá acesso ao fornecedor) */
 async function productAsUser(req: Request, productId: string) {
@@ -92,10 +112,16 @@ Deno.serve(async (req) => {
       // Contas no modelo "User Products" (tag user_product_seller) não aceitam title:
       // enviam family_name e o Mercado Livre gera o título do anúncio.
       let userProducts = false
+      let me: { tags?: string[]; status?: { list?: { allow?: boolean; codes?: string[] } } } | null = null
       try {
-        const me = await mlFetch<{ tags?: string[] }>(token, '/users/me')
-        userProducts = Array.isArray(me.tags) && me.tags.includes('user_product_seller')
+        me = await mlFetch(token, '/users/me')
+        userProducts = Array.isArray(me?.tags) && me!.tags!.includes('user_product_seller')
       } catch { /* segue no formato clássico; o retry abaixo cobre */ }
+
+      // Conta ainda não habilitada para vender: explica o que falta no cadastro do ML
+      if (me?.status?.list && me.status.list.allow === false) {
+        throw new HttpError(422, 'seller_unable_to_list', sellerBlockMessage(me.status.list.codes ?? []))
+      }
 
       const baseBody = {
         category_id: categoryId,
