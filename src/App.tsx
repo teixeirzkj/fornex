@@ -20,6 +20,7 @@ const Login = lazy(() => import('@/pages/auth/Login'))
 const Signup = lazy(() => import('@/pages/auth/Signup'))
 const ForgotPassword = lazy(() => import('@/pages/auth/ForgotPassword'))
 const ResetPassword = lazy(() => import('@/pages/auth/ResetPassword'))
+const Confirm = lazy(() => import('@/pages/auth/Confirm'))
 
 // Painel do cliente
 const Overview = lazy(() => import('@/pages/app/Overview'))
@@ -69,6 +70,7 @@ export default function App() {
           <Route path="cadastro" element={<RedirectIfAuthed><Signup /></RedirectIfAuthed>} />
           <Route path="recuperar-senha" element={<ForgotPassword />} />
           <Route path="redefinir-senha" element={<ResetPassword />} />
+          <Route path="auth/confirmar" element={<Confirm />} />
         </Route>
 
         <Route path="app" element={<RequireAuth><AppLayout /></RequireAuth>}>
