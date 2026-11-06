@@ -13,6 +13,7 @@ const AdminLayout = lazy(() => import('@/components/layout/AdminLayout'))
 // Site público
 const Landing = lazy(() => import('@/pages/public/Landing'))
 const Pricing = lazy(() => import('@/pages/public/Pricing'))
+const BecomeSupplier = lazy(() => import('@/pages/public/BecomeSupplier'))
 const Legal = lazy(() => import('@/pages/public/Legal'))
 const NotFound = lazy(() => import('@/pages/public/NotFound'))
 
@@ -53,6 +54,7 @@ const AdminIntegrations = lazy(() => import('@/pages/admin/Integrations'))
 const AdminIntegrationDetail = lazy(() => import('@/pages/admin/IntegrationDetail'))
 const AdminImport = lazy(() => import('@/pages/admin/Import'))
 const AdminUpdates = lazy(() => import('@/pages/admin/Updates'))
+const AdminApplications = lazy(() => import('@/pages/admin/Applications'))
 
 function ScrollToTop() {
   const { pathname } = useLocation()
@@ -69,6 +71,7 @@ export default function App() {
         <Route element={<PublicLayout />}>
           <Route index element={<Landing />} />
           <Route path="planos" element={<Pricing />} />
+          <Route path="seja-fornecedor" element={<BecomeSupplier />} />
           <Route path="legal/:doc" element={<Legal />} />
         </Route>
 
@@ -112,6 +115,7 @@ export default function App() {
           <Route path="integracoes/:id" element={<AdminIntegrationDetail />} />
           <Route path="importar" element={<AdminImport />} />
           <Route path="atualizacoes" element={<AdminUpdates />} />
+          <Route path="candidatos" element={<AdminApplications />} />
         </Route>
 
         <Route path="painel" element={<Navigate to="/app" replace />} />

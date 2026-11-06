@@ -3,7 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { RouteOutlet } from '@/components/layout/RouteOutlet'
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  ArrowLeft, Building, CreditCard, Layers, LayoutDashboard, LogOut, Megaphone, Menu, PanelLeftClose, PanelLeftOpen,
+  ArrowLeft, Building, CreditCard, Inbox, Layers, LayoutDashboard, LogOut, Megaphone, Menu, PanelLeftClose, PanelLeftOpen,
   Plug, Receipt, Tags, Upload, Users, X, type LucideIcon,
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
@@ -15,6 +15,7 @@ import { cn, initials } from '@/lib/utils'
 const NAV: { to: string; label: string; icon: LucideIcon; end?: boolean }[] = [
   { to: '/admin', label: 'Visão geral', icon: LayoutDashboard, end: true },
   { to: '/admin/fornecedores', label: 'Fornecedores', icon: Building },
+  { to: '/admin/candidatos', label: 'Candidatos', icon: Inbox },
   { to: '/admin/categorias', label: 'Categorias', icon: Tags },
   { to: '/admin/importar', label: 'Importar', icon: Upload },
   { to: '/admin/integracoes', label: 'Integrações', icon: Plug },

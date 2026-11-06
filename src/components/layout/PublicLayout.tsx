@@ -14,6 +14,7 @@ const NAV = [
   { href: '/#como-funciona', label: 'Como funciona' },
   { href: '/#categorias', label: 'Categorias' },
   { href: '/planos', label: 'Planos' },
+  { href: '/seja-fornecedor', label: 'Seja fornecedor' },
   { href: '/#duvidas', label: 'Dúvidas' },
 ]
 
@@ -115,6 +116,7 @@ export default function PublicLayout() {
             { href: '/#como-funciona', label: 'Como funciona' },
             { href: '/#categorias', label: 'Categorias' },
             { href: '/planos', label: 'Planos e preços' },
+            { href: '/seja-fornecedor', label: 'Seja um fornecedor' },
           ]} />
           <FooterCol title="Conta" links={[
             { href: '/entrar', label: 'Entrar' },
